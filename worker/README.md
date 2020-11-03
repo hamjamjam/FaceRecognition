@@ -24,10 +24,10 @@ Images sent by the REST front-end have an associated hash value that is used to 
 The worker should extract the list of faces in the image using `face_recognition.face_encodings` (see below). Then, for each face in that list, you should add the face and corresponding image to the Redis database and then *compare those faces to all other faces in each image the database*. For each image containing any matching face, you would add the images (hashes) of each image to the other such that eventually we can determine the set of images that contain matching faces. Once this process is completed, you acknowledge the message.
 
 Because Redis is a simple key-value store, we need to construct the following databases:
-1. $ name \rightarrow imghash $ - Hash from image name
-1. $ imghash \rightarrow \{  name \} $ - Set of origin name or url of image
-1. $ imghash \rightarrow [ facrec ] $ - List or set of face recognition data for an image
-1. $ imghash \rightarrow \{ imghash \} $ - Set of images containing matching faces
+1. $ name \rightarrow imghash $ - image name (e.g. URL) to image hash (hash of actual image, so two urls of the same image will have the same hash)
+1. $ imghash \rightarrow \{  name \} $ - image has to set of names (e.g. hash of images and list of urls pointing to that image)
+1. $ imghash \rightarrow [ facrec ] $ - image hash and list of faces in that image
+1. $ imghash \rightarrow \{ imghash \} $ - image hash and set of other images hashes with a one face overlap
 
 If an image hash has already been added, it doesn't need to be scanned again, but you should add the name to the set of origin names/urls for that image.
 
