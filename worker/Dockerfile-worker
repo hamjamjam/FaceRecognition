@@ -51,3 +51,16 @@ RUN cd /root/face_recognition && \
 
 CMD cd /root/face_recognition/examples && \
     python3 recognize_faces_in_pictures.py
+
+RUN mkdir /worker
+WORKDIR /worker
+copy worker-server.py /worker
+CMD  python3 worker-server.py
+
+#COPY . /root/face_recognition
+#RUN cd /root/face_recognition && \
+#    pip3 install -r requirements.txt && \
+#    python3 setup.py install
+
+#CMD cd /root/face_recognition/examples && \
+#    python3 recognize_faces_in_pictures.py
