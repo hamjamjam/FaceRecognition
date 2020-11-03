@@ -7,5 +7,5 @@ RUN pip3 install --upgrade pika
 RUN pip3 install redis
 RUN mkdir /rest
 WORKDIR /rest
-copy rest/rest-server.py /rest
+copy rest-server.py /rest
 CMD     python3 rest-server.py
