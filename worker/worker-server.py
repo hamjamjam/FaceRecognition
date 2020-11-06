@@ -49,6 +49,7 @@ redisNameToHash = redis.Redis(host=redisHost, db=1)    # Key -> Value
 redisHashToName = redis.Redis(host=redisHost, db=2)    # Key -> Set
 redisHashToFaceRec = redis.Redis(host=redisHost, db=3) # Key -> Set
 redisHashToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
+redisFaceToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 r.set(‘foo’,’bar’)
 r.get(‘foo’)
 
@@ -87,43 +88,43 @@ def upload_image():
   
 def callback(ch, method, properties, body):
   ##body is image url
-    img = face_recognition.load_image_file(body)
-    img_hash = hashlib.md5(Image.open(body).tobytes())
-    
-    if reidsNameToHash.exists(body):
+    responsekey = "hashes_of_corr_images"
+    if redisNameToHash.exists(body):
+        img_hash = redisNameToHash.get(body)
         hashes = redisHashtoHashSet.get(img_hash)
-        result = {
-        "faces_found_in_image": hashes    }
+        result = {responsekey: hashes    }
         return jsonify(result)
+    
+    img_hash = hashlib.md5(Image.open(body).tobytes())
     
     if redishHashToFaceRec.exists(img_hash):
         redisNameToHash.set(body, img_hash)
-        reidsHashToName.set(img_hash, body)
-        hashes = redishHashToFaceRec.get(img_hash)
-        result = {
-        "faces_found_in_image": hashes    }
+        redisHashToName.sadd(img_hash, body)
+        hashes = redisHashtoHashSet.get(img_hash)
+        result = {responsekey: hashes    }
         return jsonify(result)
+    
+    img = face_recognition.load_image_file(body)
     
     face_encodings = face_recognition.face_encodings(img)
     
     redisNameToHash.set(body, img_hash)
-    reidsHashToName.set(img_hash, body)
-    redisHashToFaceRec.set(img_hash, set(face_encodings))
+    redisHashToName.set(img_hash, body)
+    redisHashToFaceRec.set(img_hash, *set(face_encodings))
     
-    otherHash = []
+    otherHash = {}
+        
     for face_enc in face_encodings:
         try:
-            otherHash.append(redisFaceToHash.get(face_enc))
+            otherHash.add(redisFaceToHashSet.get(face_enc))
         except:
             pass
-        redisFaceToHash.set(face_enc, img_hash)
+        redisFaceToHashSet.sadd(face_enc, img_hash)
     
-    redisHashtoHashSet.set(img_hash, set(otherHash))
+    redisHashtoHashSet.sadd(img_hash, *otherHash)
     
-
-    # Return the result as json
-    result = {
-        "faces_found_in_image": hashes    }
+    hashes = redisHashtoHashSet.get(img_hash)
+    result = {responsekey: hashes    }
     return jsonify(result)
 
     
