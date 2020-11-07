@@ -107,10 +107,9 @@ def scanUrl(X):
       
     return Response(status=500)
 
+print('pooooo')
 
-
-
-app.run(host="0.0.0.0", port=5000)
 app.debug = True
+app.run(host="0.0.0.0", port=5000)
 
 
