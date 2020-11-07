@@ -4,7 +4,7 @@ RUN pip3 install pika
 RUN pip3 install redis
 RUN pip3 install flask
 
-ENV PYTHONUNBUFFERED=0
+ENV PYTHONUNBUFFERED=1
 
 RUN mkdir /worker
 WORKDIR /worker
