@@ -4,6 +4,8 @@ RUN pip3 install pika
 RUN pip3 install redis
 RUN pip3 install flask
 
+ENV PYTHONUNBUFFERED=0
+
 RUN mkdir /worker
 WORKDIR /worker
 copy worker-server.py /worker
