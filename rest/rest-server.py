@@ -82,7 +82,7 @@ def getChecksum(X):
 
 @app.route('/scan/url', methods=['POST'])
 def scanUrl():
-    data = resquest.json
+    data = request.json
     url = data["url"]
     
     message = pickle.dumps([X,q,r.data])
