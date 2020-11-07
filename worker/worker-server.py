@@ -28,8 +28,8 @@ hostname = platform.node()
 #  "is_picture_of_obama": true
 # }
 #
-redisHost = os.getenv("REDIS_HOST") or "localhost"
-rabbitMQHost = os.getenv("RABBITMQ_HOST") or "localhost"
+redisHost = os.getenv("REDIS_HOST") or "redis"
+rabbitMQHost = os.getenv("RABBITMQ_HOST") or "rabbitmq"
 
 print("Connecting to rabbitmq({}) and redis({})".format(rabbitMQHost,redisHost))
 
