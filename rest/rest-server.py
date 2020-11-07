@@ -105,7 +105,7 @@ def scanUrl(X):
                 response_pickled = jsonpickle.encode(response)
                 return Response(response=response_pickled, status=200, mimetype="application/json")
       
-    return Response(status=500)
+    return Response(i,status=500)
 
 print('pooooo')
 
