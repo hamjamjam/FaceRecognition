@@ -30,12 +30,15 @@ redisHashToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 redisFaceToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 
 def main():
+    print('running main')
     connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitMQHost))
     channel = connection.channel()
     channel.queue_declare(queue='work')
-  
+    print('connection made')
+    
     def callback(ch, method, properties, body):
     ##body is image url
+        print('callback made')
         responsekey = "hashes_of_corr_images"
         if redisNameToHash.exists(body):
             img_hash = redisNameToHash.get(body)
