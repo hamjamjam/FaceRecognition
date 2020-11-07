@@ -28,6 +28,7 @@ redisHashToName = redis.Redis(host=redisHost, db=2)    # Key -> Set
 redisHashToFaceRec = redis.Redis(host=redisHost, db=3) # Key -> Set
 redisHashToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 redisFaceToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
+redisNameToHas.set('foo','bar')
 
 def main():
     print('running main')
