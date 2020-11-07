@@ -97,7 +97,7 @@ def scanUrl(X):
     
     for i in range(0,10):
         time.sleep(1)
-        if redisNameToHash.exists(url)
+        if redisNameToHash.exists(url):
             myhash = redisNameToHash.get(url)
             if redisHashToHashSet.exists(myhash):
                 myhashset = redisHashToHashSet.get(myhash)
