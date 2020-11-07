@@ -50,8 +50,6 @@ redisHashToName = redis.Redis(host=redisHost, db=2)    # Key -> Set
 redisHashToFaceRec = redis.Redis(host=redisHost, db=3) # Key -> Set
 redisHashToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 redisFaceToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
-r.set(‘foo’,’bar’)
-r.get(‘foo’)
 
 def allowed_file(filename):
     return '.' in filename and \
