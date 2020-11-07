@@ -1,5 +1,6 @@
 ##
 from flask import Flask, request, Response
+import time
 import json, jsonpickle, pickle
 import platform
 import io, os, sys
@@ -13,6 +14,12 @@ import base64
 ##
 redisHost = os.getenv("REDIS_HOST") or "localhost"
 rabbitMQHost = os.getenv("RABBITMQ_HOST") or "localhost"
+
+redisNameToHash = redis.Redis(host=redisHost, db=1)    # Key -> Value
+redisHashToName = redis.Redis(host=redisHost, db=2)    # Key -> Set
+redisHashToFaceRec = redis.Redis(host=redisHost, db=3) # Key -> Set
+redisHashToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
+redisFaceToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 
 print("Connecting to rabbitmq({}) and redis({})".format(rabbitMQHost,redisHost))
 
@@ -69,5 +76,41 @@ def getChecksum(X):
     }
     response_pickled = jsonpickle.encode(response)
     return Response(response=response_pickled, status=200, mimetype="application/json")
+
+
+
+
+@app.route('/scan/url', methods=['POST'])
+def scanUrl(X):
+    data = resquest.json
+    url = data["url"]
+    
+    message = pickle.dumps([X,q,r.data])
+    credentials=pika.PlainCredentials('guest','guest')
+    parameters = pika.ConnectionParameters('rabbitmq', 5672, '/', credentials)
+    connection = pika.BlockingConnection(parameters)
+    channel = connection.channel()
+    channel.queue_declare(queue='work')
+    channel.basic_publish(exchange ='',routing_key='work', body = message)
+    print(" [x] Sent Data " + url)
+    connection.close()
+    
+    for i in range(0,10):
+        time.sleep(1)
+        if redisNameToHash.exists(url)
+            myhash = redisNameToHash.get(url)
+            if redisHashToHashSet.exists(myhash):
+                myhashset = redisHashToHashSet.get(myhash)
+                response = {"correlated_images": myhashset}
+                response_pickled = jsonpickle.encode(response)
+                return Response(response=response_pickled, status=200, mimetype="application/json")
+      
+    return Response(status=500)
+
+
+
+
 app.run(host="0.0.0.0", port=5000)
 app.debug = True
+
+
