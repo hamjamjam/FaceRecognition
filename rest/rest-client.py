@@ -31,7 +31,7 @@ def doUrl(addr, filename, debug=False):
     if debug:
         # decode response
         print("Response is", response)
-        print(json.loads(response.text))
+        #print(json.loads(response.text))
 
 def doMatch(addr, hashval, debug=False):
     url = addr + "/match/" + hashval
