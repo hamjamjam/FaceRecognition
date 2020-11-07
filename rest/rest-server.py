@@ -12,8 +12,8 @@ import base64
 ##
 ## Configure test vs. production
 ##
-redisHost = os.getenv("REDIS_HOST") or "localhost"
-rabbitMQHost = os.getenv("RABBITMQ_HOST") or "localhost"
+redisHost = os.getenv("REDIS_HOST") or "redis"
+rabbitMQHost = os.getenv("RABBITMQ_HOST") or "rabbitmq"
 
 redisNameToHash = redis.Redis(host=redisHost, db=1)    # Key -> Value
 redisHashToName = redis.Redis(host=redisHost, db=2)    # Key -> Set
