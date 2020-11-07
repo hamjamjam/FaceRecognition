@@ -23,8 +23,6 @@ from flask import Flask, jsonify, request, redirect
 
 # You can change this to any folder on your system
 
-app = Flask(__name__)
-
 redisNameToHash = redis.Redis(host=redisHost, db=1)    # Key -> Value
 redisHashToName = redis.Redis(host=redisHost, db=2)    # Key -> Set
 redisHashToFaceRec = redis.Redis(host=redisHost, db=3) # Key -> Set
@@ -32,7 +30,7 @@ redisHashToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 redisFaceToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 
 def main():
-    connection = pika.BlockingConnection(pika.ConnectionParameters('rabbitmq'))
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitMQHost))
     channel = connection.channel()
     channel.queue_declare(queue='work')
   
