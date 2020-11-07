@@ -1,4 +1,4 @@
-docker pull dirkcgrunwald/facerec
+FROM docker/dirkcgrunwald:facerec
 RUN mkdir /worker
 WORKDIR /worker
 copy worker-server.py /worker
