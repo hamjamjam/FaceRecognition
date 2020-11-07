@@ -81,7 +81,7 @@ def getChecksum(X):
 
 
 @app.route('/scan/url', methods=['POST'])
-def scanUrl(X):
+def scanUrl():
     data = resquest.json
     url = data["url"]
     
