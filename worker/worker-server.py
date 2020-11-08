@@ -41,7 +41,17 @@ def callback2(ch, method, properties, body):
         hashes = redisHashtoHashSet.get(img_hash)
         result = {responsekey: hashes    }
         return jsonify(result)
+    
+    try:
+        img_hash = hashlib.md5(Image.open(body).tobytes())
+    except Exception as e:
+        print("img hash failed: ", e)
+        img_hash = '0'
+    
+    print(img_hash)
+    
     return
+
 
 def main():
     print('running main')
