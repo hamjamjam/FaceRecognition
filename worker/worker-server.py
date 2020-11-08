@@ -33,7 +33,11 @@ print(redisNameToHash.get('foo'))
 
 def main():
     print('running main')
-    connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitMQHost))
+    
+    credentials=pika.PlainCredentials('guest','guest')
+    parameters = pika.ConnectionParameters(host=rabbitMQHost, 5672, '/', credentials)
+    connection = pika.BlockingConnection(parameters)
+    #connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitMQHost))
     channel = connection.channel()
     channel.queue_declare(queue='work')
     print('connection made')
