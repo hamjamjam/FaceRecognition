@@ -14,7 +14,7 @@ def doImage(addr, filename, debug=False):
     headers = {'content-type': 'image/jpg'}
     img = open(filename, 'rb').read()
     # send http request with image and receive response
-    image_url = addr + '/scan/image' + "/" + os.path.basename(filename)
+    image_url = addr + '/api/image' + "/" + os.path.basename(filename)
     response = requests.post(image_url, data=img, headers=headers)
     if debug:
         # decode response
