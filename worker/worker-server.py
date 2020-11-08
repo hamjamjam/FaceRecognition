@@ -46,11 +46,25 @@ def callback2(ch, method, properties, body):
         return jsonify(result)
     
     try:
+        extension = body.split('.')[-1]
+        
         response = requests.get(body)
+        print('did response')
         img = Image.open(BytesIO(response.content))
+        print('got img')
         m = hashlib.md5()
-        m.update(img)
+        print('set up hashlib')
+        
+        with io.BytesIo() as memf:
+            img.save(memf, extension)
+            print('save')
+            data = memef.getvalue()
+            print('data')
+            m.update(data)
+            print('updated data')
+
         img_hash = m.hexdigest()
+        print('successsssss')
     except Exception as e:
         print("img hash failed: ", e)
         img_hash = '0'
