@@ -11,6 +11,7 @@ import pika
 import redis
 import hashlib
 import inspect
+import urllib.request
 
 hostname = platform.node()
 
@@ -43,7 +44,10 @@ def callback2(ch, method, properties, body):
         return jsonify(result)
     
     try:
-        img_hash = hashlib.md5(Image.open(body).tobytes())
+        extension = body.split('.')[-1]
+        filename = "temporary-filename." + extension
+        urllib.request.urlretrieve(body, filename)
+        img_hash = hashlib.md5(Image.open(filename).tobytes())
     except Exception as e:
         print("img hash failed: ", e)
         img_hash = '0'
