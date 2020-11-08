@@ -12,6 +12,8 @@ import redis
 import hashlib
 import inspect
 import urllib.request
+import requests
+from io import BytesIO
 
 hostname = platform.node()
 
@@ -44,10 +46,8 @@ def callback2(ch, method, properties, body):
         return jsonify(result)
     
     try:
-        extension = body.split('.')[-1]
-        filename = "temporary-filename." + extension
-        urllib.request.urlretrieve(body, filename)
-        img = open(filename, 'rb').read()
+        response = requests.get(body)
+        img = Image.open(BytesIO(response.content))
         m = hashlib.md5()
         m.update(img)
         img_hash = m.hexdigest()
