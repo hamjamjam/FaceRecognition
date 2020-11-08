@@ -35,7 +35,8 @@ redisFaceToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 redisNameToHash.set('foo','bar')
 print(redisNameToHash.get('foo'))
 
-def callback2(ch, method, properties, body):
+def callback2(ch, method, properties, inputbody):
+    body = inputbody.decode("utf-8")
     print(body)
     print('callback made')
     responsekey = "hashes_of_corr_images"
@@ -46,23 +47,13 @@ def callback2(ch, method, properties, body):
         return jsonify(result)
     
     try:
-        extension = body.split('.')[-1]
-        
         response = requests.get(body)
         print('did response')
         img = Image.open(BytesIO(response.content))
         print('got img')
         m = hashlib.md5()
         print('set up hashlib')
-        
-        with io.BytesIo() as memf:
-            img.save(memf, extension)
-            print('save')
-            data = memef.getvalue()
-            print('data')
-            m.update(data)
-            print('updated data')
-
+        m.update(img)
         img_hash = m.hexdigest()
         print('successsssss')
     except Exception as e:
@@ -86,8 +77,10 @@ def main():
     print('connection made')
     print(inspect.getargspec(channel.basic_consume))
     
-    def callback(ch, method, properties, body):
+    def callback(ch, method, properties, inputbody):
         print('callback made')
+        body = inputbody.decode("utf-8")
+        
         responsekey = "hashes_of_corr_images"
         if redisNameToHash.exists(body):
             img_hash = redisNameToHash.get(body)
