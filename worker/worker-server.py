@@ -32,6 +32,24 @@ redisFaceToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 redisNameToHash.set('foo','bar')
 print(redisNameToHash.get('foo'))
 
+def callback2(ch, method, properties, body):
+    print(body)
+    print('callback made')
+    responsekey = "hashes_of_corr_images"
+    if redisNameToHash.exists(body):
+        img_hash = redisNameToHash.get(body)
+        hashes = redisHashtoHashSet.get(img_hash)
+        result = {responsekey: hashes    }
+        return jsonify(result)
+    img_hash = hashlib.md5(Image.open(body).tobytes())
+    if redishHashToFaceRec.exists(img_hash):
+        redisNameToHash.set(body, img_hash)
+        redisHashToName.sadd(img_hash, body)
+        hashes = redisHashtoHashSet.get(img_hash)
+        result = {responsekey: hashes    }
+        return jsonify(result)
+    return
+
 def main():
     print('running main')
     
@@ -43,28 +61,6 @@ def main():
     channel.queue_declare(queue='work')
     print('connection made')
     print(inspect.getargspec(channel.basic_consume))
-    
-    def callback2(ch, method, properties, body):
-        print(body)
-        print('callback made')
-        responsekey = "hashes_of_corr_images"
-        if redisNameToHash.exists(body):
-            img_hash = redisNameToHash.get(body)
-            hashes = redisHashtoHashSet.get(img_hash)
-            result = {responsekey: hashes    }
-            return jsonify(result)
-    
-        img_hash = hashlib.md5(Image.open(body).tobytes())
-
-        if redishHashToFaceRec.exists(img_hash):
-            redisNameToHash.set(body, img_hash)
-            redisHashToName.sadd(img_hash, body)
-            hashes = redisHashtoHashSet.get(img_hash)
-            result = {responsekey: hashes    }
-            return jsonify(result)
-        
-        
-        return
     
     def callback(ch, method, properties, body):
         print('callback made')
