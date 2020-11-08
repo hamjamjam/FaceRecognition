@@ -35,7 +35,7 @@ def main():
     print('running main')
     
     credentials=pika.PlainCredentials('guest','guest')
-    parameters = pika.ConnectionParameters(host=rabbitMQHost, 5672, '/', credentials)
+    parameters = pika.ConnectionParameters(rabbitMQHost, 5672, '/', credentials)
     connection = pika.BlockingConnection(parameters)
     #connection = pika.BlockingConnection(pika.ConnectionParameters(host=rabbitMQHost))
     channel = connection.channel()
