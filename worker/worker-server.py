@@ -80,9 +80,8 @@ def main():
         return jsonify(result)
 
 
-    channel.basic_consume(
-        queue='work', on_message_callback=callback, auto_ack=True)
-    #  print(' [*] Waiting for messages. To exit press CTRL+C')
+    channel.basic_consume(queue='work', on_message_callback=callback, auto_ack=True)
+    print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
 
     
