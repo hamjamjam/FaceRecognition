@@ -10,6 +10,7 @@ import sys
 import pika
 import redis
 import hashlib
+import inspect
 
 hostname = platform.node()
 
@@ -41,7 +42,7 @@ def main():
     channel = connection.channel()
     channel.queue_declare(queue='work')
     print('connection made')
-    
+    print(inspect.getargspec(channel.basic_consume))
     def callback2(ch, method, properties, body):
         print(body)
         return
