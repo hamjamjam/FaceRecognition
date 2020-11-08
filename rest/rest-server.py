@@ -86,8 +86,9 @@ def getChecksum(X):
 def scanUrl():
     data = request.json
     url = data["url"]
+    print(url)
     
-    message = pickle.dumps([url])
+    message = url
     credentials=pika.PlainCredentials('guest','guest')
     parameters = pika.ConnectionParameters('rabbitmq', 5672, '/', credentials)
     connection = pika.BlockingConnection(parameters)
