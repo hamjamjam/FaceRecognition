@@ -1,4 +1,5 @@
 FROM python:3.7
+ENV PYTHONUNBUFFERED=1
 RUN pip3 install Flask
 RUN pip3 install pillow jsonpickle
 RUN pip3 install requests
