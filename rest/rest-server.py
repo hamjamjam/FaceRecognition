@@ -85,7 +85,7 @@ def scanUrl():
     data = request.json
     url = data["url"]
     
-    message = pickle.dumps([X,q,r.data])
+    message = pickle.dumps([url])
     credentials=pika.PlainCredentials('guest','guest')
     parameters = pika.ConnectionParameters('rabbitmq', 5672, '/', credentials)
     connection = pika.BlockingConnection(parameters)
