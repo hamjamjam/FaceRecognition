@@ -47,7 +47,10 @@ def callback2(ch, method, properties, body):
         extension = body.split('.')[-1]
         filename = "temporary-filename." + extension
         urllib.request.urlretrieve(body, filename)
-        img_hash = hashlib.md5(Image.open(filename).tobytes())
+        img = open(filename, 'rb').read()
+        m = hashlib.md5()
+        m.update(img)
+        img_hash = m.hexdigest()
     except Exception as e:
         print("img hash failed: ", e)
         img_hash = '0'
