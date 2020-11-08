@@ -53,6 +53,17 @@ def main():
             hashes = redisHashtoHashSet.get(img_hash)
             result = {responsekey: hashes    }
             return jsonify(result)
+    
+        img_hash = hashlib.md5(Image.open(body).tobytes())
+
+        if redishHashToFaceRec.exists(img_hash):
+            redisNameToHash.set(body, img_hash)
+            redisHashToName.sadd(img_hash, body)
+            hashes = redisHashtoHashSet.get(img_hash)
+            result = {responsekey: hashes    }
+            return jsonify(result)
+        
+        
         return
     
     def callback(ch, method, properties, body):
