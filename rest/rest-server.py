@@ -30,6 +30,7 @@ app = Flask(__name__)
 @app.route('/api/image/<X>', methods=['POST'])
 def test(X):
     print(X)
+    app.logger.info(X)
     r = request
     # convert the data to a PIL image type so we can extract dimensions
     try:
@@ -49,6 +50,7 @@ def test(X):
         channel.queue_declare(queue='work')
         channel.basic_publish(exchange ='',routing_key='work', body = message)
         print(" [x] Sent Data ")
+        app.logger.info('sent data')
         connection.close()
     except:
         response = {
