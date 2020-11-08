@@ -43,12 +43,12 @@ def main():
     channel.queue_declare(queue='work')
     print('connection made')
     print(inspect.getargspec(channel.basic_consume))
+    
     def callback2(ch, method, properties, body):
         print(body)
         return
     
     def callback(ch, method, properties, body):
-    ##body is image url
         print('callback made')
         responsekey = "hashes_of_corr_images"
         if redisNameToHash.exists(body):
@@ -90,7 +90,7 @@ def main():
         return jsonify(result)
 
 
-    channel.basic_consume(queue='work', on_message_callback=callback2, auto_ack=True)
+    channel.basic_consume(queue='work', on_message_callback=callback, auto_ack=True)
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
 
