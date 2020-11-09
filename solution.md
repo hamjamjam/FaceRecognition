@@ -22,3 +22,6 @@ The worker does a lot of things; right now it will just tell you if your image c
 The worker will also save the image url, the image hash (so the server can pull up the image hash and then use the hash as a key for another Redis database).
 
 The worker does some of the full face rec (i.e. stores pickled versions of face encodings)
+
+## Screenshots
+ ![](lab7.png)
