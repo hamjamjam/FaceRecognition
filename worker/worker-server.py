@@ -31,7 +31,7 @@ redisNameToHash = redis.Redis(host=redisHost, db=1)    # Key -> Value
 redisHashToName = redis.Redis(host=redisHost, db=2)    # Key -> Set
 redisHashToFaceRec = redis.Redis(host=redisHost, db=3) # Key -> Set
 redisHashToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
-redisFaceToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
+redisFaceToHashSet = redis.Redis(host=redisHost, db=5) # Key -> Set
 redisNameToHash.set('foo','bar')
 print(redisNameToHash.get('foo'))
 
@@ -41,7 +41,7 @@ def callback2(ch, method, properties, inputbody):
     print('callback made')
     responsekey = "hashes_of_corr_images"
     if redisNameToHash.exists(body):
-        img_hash = redisNameToHash.get(body)
+        img_hash = redisNameToHash.get(body).decode("utf-8")
         hashes = redisHashtoHashSet.get(img_hash)
         result = {responsekey: hashes    }
         return jsonify(result)
@@ -49,6 +49,7 @@ def callback2(ch, method, properties, inputbody):
     try:
         response = requests.get(body)
         img = Image.open(BytesIO(response.content))
+        m = hashlib.md5()
         with io.BytesIO() as memf:
             img.save(memf, 'PNG')
             data = memf.getvalue()
@@ -61,7 +62,7 @@ def callback2(ch, method, properties, inputbody):
     print(img_hash)
     
     try:
-        if redishHashToFaceRec.exists(img_hash):
+        if redisHashToFaceRec.exists(img_hash):
             redisNameToHash.set(body, img_hash)
             redisHashToName.sadd(img_hash, body)
             hashes = redisHashtoHashSet.get(img_hash)
