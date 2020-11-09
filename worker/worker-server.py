@@ -41,11 +41,7 @@ def callback2(ch, method, properties, inputbody):
     print('callback made')
     responsekey = "hashes_of_corr_images"
     if redisNameToHash.exists(body):
-        img_hash = redisNameToHash.get(body)
-        img_hash = img_hash.decode("utf-8")
-        hashes = redisHashToHashSet.smembers(img_hash)
-        result = {responsekey: hashes    }
-        return jsonify(result)
+        return
     
     try:
         response = requests.get(body)
@@ -66,9 +62,7 @@ def callback2(ch, method, properties, inputbody):
         if redisHashToFaceRec.exists(img_hash):
             redisNameToHash.set(body, img_hash)
             redisHashToName.sadd(img_hash, body)
-            hashes = redisHashToHashSet.smembers(img_hash)
-            result = {responsekey: hashes    }
-            return jsonify(result)
+            return
     
         response = requests.get(body)
         fileObject = BytesIO(response.content)
@@ -106,25 +100,20 @@ def callback2(ch, method, properties, inputbody):
         hashes = redisHashToHashSet.smembers(img_hash)
         print('got hashes')
         
-        result = {responsekey: hashes    }
-        return jsonify(result)
-        print('created result')
+        redisHashToName.sadd(img_hash, body)
+        print('set hash to name')
         
         redisNameToHash.set(body, img_hash)
         print('set name to hash')
-        redisHashToName.sadd(img_hash, body)
-        print('set hash to name')
     
     except Exception as e:
         print("something failed: ", e)  
 
-    
-    return
 
 def wrapped_callback(ch, method, properties, inputBody):
     print("wrapper: got callback")
     try: 
-        return callback2(ch, method, properties, inputBody)
+        callback2(ch, method, properties, inputBody)
     except Exception as e:
         print("ya dun fucked up mate: ", e)
 
