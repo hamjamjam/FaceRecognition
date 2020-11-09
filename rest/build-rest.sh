@@ -1,5 +1,5 @@
 #!/bin/bash
-version=$1
+version=$(git describe)
 export PROJECT_ID=jamiess-1470077384373
 docker build -t rest:${version} .
 docker build -t gcr.io/${PROJECT_ID}/rest:${version} .
