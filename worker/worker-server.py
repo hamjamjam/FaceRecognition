@@ -65,7 +65,7 @@ def isObama(face_encoding):
                            -0.01194376, -0.02300822, -0.17204897, -0.0596558 ,  0.05307484,
                             0.07417042,  0.07126575,  0.00209804]
         
-    if_obama = False
+    is_obama = False
     match_results = face_recognition.compare_faces([known_face_encoding], face_encoding)
     if match_results[0]:
         is_obama = True
@@ -120,7 +120,7 @@ def callback2(ch, method, properties, inputbody):
             print('if there were faces, added to redis')
 
         has_obama = 'no'
-        for face_enc in face_encodings_serialized:
+        for face_enc in face_encodings:
             if isObama(face_enc):
                 has_obama = 'yes'
                 break
