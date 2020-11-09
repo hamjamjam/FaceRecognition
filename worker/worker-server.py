@@ -48,19 +48,30 @@ def callback2(ch, method, properties, inputbody):
     
     try:
         response = requests.get(body)
-        print('did response')
         img = Image.open(BytesIO(response.content))
-        print('got img')
-        m = hashlib.md5()
-        print('set up hashlib')
-        m.update(img)
+        with io.BytesIO() as memf:
+            img.save(memf, 'PNG')
+            data = memf.getvalue()
+            m.update(data)
         img_hash = m.hexdigest()
-        print('successsssss')
     except Exception as e:
         print("img hash failed: ", e)
         img_hash = '0'
     
     print(img_hash)
+    
+    if redishHashToFaceRec.exists(img_hash):
+        redisNameToHash.set(body, img_hash)
+        redisHashToName.sadd(img_hash, body)
+        hashes = redisHashtoHashSet.get(img_hash)
+        result = {responsekey: hashes    }
+        return jsonify(result)
+    
+    try:
+        face_encodings = face_recognition.face_encodings(img)
+    except Exception as e:
+        print("face_ecodings failed: ", e)  
+  
     
     return
 
