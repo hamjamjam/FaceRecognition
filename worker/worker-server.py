@@ -34,7 +34,7 @@ redisHashToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 redisFaceToHashSet = redis.Redis(host=redisHost, db=5) # Key -> Set
 redisNameToHash.set('foo','bar')
 print(redisNameToHash.get('foo'))
-
+        
 def callback2(ch, method, properties, inputbody):
     body = inputbody.decode("utf-8")
     print(body)
@@ -106,6 +106,12 @@ def callback2(ch, method, properties, inputbody):
     
     return
 
+def wrapped_callback(ch, method, properties, inputBody):
+    print("wrapper: got callback")
+    try: 
+        return callback2(ch, method, properties, inputBody)
+    except Exception as e:
+        print("ya dun fucked up mate: ", e)
 
 def main():
     print('running main')
@@ -163,7 +169,7 @@ def main():
         return jsonify(result)
 
 
-    channel.basic_consume(queue='work', on_message_callback=callback2, auto_ack=True)
+    channel.basic_consume(queue='work', on_message_callback=warpped_callback, auto_ack=True)
     print(' [*] Waiting for messages. To exit press CTRL+C')
     channel.start_consuming()
 
