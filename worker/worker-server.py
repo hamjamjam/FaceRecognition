@@ -75,6 +75,7 @@ def callback2(ch, method, properties, inputbody):
         image = face_recognition.load_image_file(fileObject)
         print('loaded image')
         face_encodings = list(face_recognition.face_encodings(image))
+        face_encodings_serialized = [pickle.dumps(encoding) for encoding in face_encodings]
         
     except Exception as e:
         print("face_ecodings failed: ", e)  
@@ -83,13 +84,14 @@ def callback2(ch, method, properties, inputbody):
         if len(face_encodings) > 0:
             print('adding faces')
             print(type(face_encodings))
-            redisHashToFaceRec.sadd(img_hash, *face_encodings)
+            print(type(img_hash))
+            redisHashToFaceRec.sadd(img_hash, *face_encodings_serialized)
             print('if there were faces, added to redis')
 
         otherHash = set()
         print('created empty set for otherHash')
 
-        for face_enc in face_encodings:
+        for face_enc in face_encodings_serialized:
             try:
                 otherHash.update(redisFaceToHashSet.smembers(face_enc))
             except:
