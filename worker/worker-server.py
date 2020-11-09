@@ -80,11 +80,9 @@ def callback2(ch, method, properties, inputbody):
         print("face_ecodings failed: ", e)  
         
     try:    
-        redisNameToHash.set(body, img_hash)
-        print('set name to hash')
-        redisHashToName.sadd(img_hash, body)
-        print('set hash to name')
         if len(face_encodings) > 0:
+            print('adding faces')
+            print(type(face_encodings))
             redisHashToFaceRec.sadd(img_hash, *face_encodings)
             print('if there were faces, added to redis')
 
@@ -108,6 +106,11 @@ def callback2(ch, method, properties, inputbody):
         result = {responsekey: hashes    }
         return jsonify(result)
         print('created result')
+        
+        redisNameToHash.set(body, img_hash)
+        print('set name to hash')
+        redisHashToName.sadd(img_hash, body)
+        print('set hash to name')
     
     except Exception as e:
         print("something failed: ", e)  
