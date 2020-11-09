@@ -105,7 +105,7 @@ def scanUrl():
         if redisNameToHash.exists(url):
             myhash = redisNameToHash.get(url)
             if redisHashToObama.exists(myhash):
-                isObama = redisHashToObama.get(myhash)
+                isObama = redisHashToObama.get(myhash).decode("utf-8") 
                 print("is obama: ", isObama)
                 return jsonify(is_obama=isObama)
 
