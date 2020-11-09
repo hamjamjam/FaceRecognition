@@ -19,7 +19,9 @@ redisNameToHash = redis.Redis(host=redisHost, db=1)    # Key -> Value
 redisHashToName = redis.Redis(host=redisHost, db=2)    # Key -> Set
 redisHashToFaceRec = redis.Redis(host=redisHost, db=3) # Key -> Set
 redisHashToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
-redisFaceToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
+redisFaceToHashSet = redis.Redis(host=redisHost, db=5) # Key -> Set
+redisHashToObama = redis.Redis(host=redisHost, db=6)
+
 
 print("Connecting to rabbitmq({}) and redis({})".format(rabbitMQHost,redisHost))
 
@@ -99,14 +101,15 @@ def scanUrl():
     connection.close()
     
     for i in range(0,10):
-        time.sleep(1)
+        time.sleep(0.25)
         if redisNameToHash.exists(url):
             myhash = redisNameToHash.get(url)
-            if redisHashToHashSet.exists(myhash):
-                myhashset = redisHashToHashSet.get(myhash)
-                response = {"correlated_images": myhashset}
+            if redisHashToObama.exists(myhash):
+                isObama = redisHashToObama.get(myhash)
+                response = {"is_obama": isObama}
                 response_pickled = jsonpickle.encode(response)
                 return Response(response=response_pickled, status=200, mimetype="application/json")
+
       
     return Response(status=500)
 
