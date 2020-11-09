@@ -43,7 +43,7 @@ def callback2(ch, method, properties, inputbody):
     if redisNameToHash.exists(body):
         img_hash = redisNameToHash.get(body)
         img_hash = img_hash.decode("utf-8")
-        hashes = redisHashtoHashSet.smembers(img_hash)
+        hashes = redisHashToHashSet.smembers(img_hash)
         result = {responsekey: hashes    }
         return jsonify(result)
     
@@ -66,7 +66,7 @@ def callback2(ch, method, properties, inputbody):
         if redisHashToFaceRec.exists(img_hash):
             redisNameToHash.set(body, img_hash)
             redisHashToName.sadd(img_hash, body)
-            hashes = redisHashtoHashSet.smembers(img_hash)
+            hashes = redisHashToHashSet.smembers(img_hash)
             result = {responsekey: hashes    }
             return jsonify(result)
     
@@ -98,11 +98,12 @@ def callback2(ch, method, properties, inputbody):
                 pass
             redisFaceToHashSet.sadd(face_enc, img_hash)
         print('for each face, added to face to hash, and got other hash')
+        
+        if len(otherHash) > 0:
+            redisHashToHashSet.sadd(img_hash, *otherHash)
+            print('added hash to hashset')
 
-        redisHashtoHashSet.sadd(img_hash, *otherHash)
-        print('added hash to hashset')
-
-        hashes = redisHashtoHashSet.smembers(img_hash)
+        hashes = redisHashToHashSet.smembers(img_hash)
         print('got hashes')
         
         result = {responsekey: hashes    }
@@ -146,7 +147,7 @@ def main():
         responsekey = "hashes_of_corr_images"
         if redisNameToHash.exists(body):
             img_hash = redisNameToHash.get(body)
-            hashes = redisHashtoHashSet.get(img_hash)
+            hashes = redisHashToHashSet.get(img_hash)
             result = {responsekey: hashes    }
             return jsonify(result)
     
@@ -155,7 +156,7 @@ def main():
         if redishHashToFaceRec.exists(img_hash):
             redisNameToHash.set(body, img_hash)
             redisHashToName.sadd(img_hash, body)
-            hashes = redisHashtoHashSet.get(img_hash)
+            hashes = redisHashToHashSet.get(img_hash)
             result = {responsekey: hashes    }
             return jsonify(result)
 
@@ -176,9 +177,9 @@ def main():
                 pass
             redisFaceToHashSet.sadd(face_enc, img_hash)
 
-        redisHashtoHashSet.sadd(img_hash, *otherHash)
+        redisHashToHashSet.sadd(img_hash, *otherHash)
 
-        hashes = redisHashtoHashSet.get(img_hash)
+        hashes = redisHashToHashSet.get(img_hash)
         result = {responsekey: hashes    }
         return jsonify(result)
 
