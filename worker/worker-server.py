@@ -41,7 +41,8 @@ def callback2(ch, method, properties, inputbody):
     print('callback made')
     responsekey = "hashes_of_corr_images"
     if redisNameToHash.exists(body):
-        img_hash = redisNameToHash.set(body).decode("utf-8")
+        img_hash = redisNameToHash.get(body)
+        img_hash = img_hash.decode("utf-8")
         hashes = redisHashtoHashSet.smembers(img_hash)
         result = {responsekey: hashes    }
         return jsonify(result)
