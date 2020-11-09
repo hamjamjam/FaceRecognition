@@ -106,9 +106,8 @@ def scanUrl():
             myhash = redisNameToHash.get(url)
             if redisHashToObama.exists(myhash):
                 isObama = redisHashToObama.get(myhash)
-                response = {"is_obama": isObama}
-                response_pickled = jsonpickle.encode(response)
-                return Response(response=response_pickled, status=200, mimetype="application/json")
+                print("is obama: ", isObama)
+                return jsonify(is_obama=isObama)
 
       
     return Response(status=500)
