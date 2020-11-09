@@ -60,15 +60,17 @@ def callback2(ch, method, properties, inputbody):
     
     print(img_hash)
     
-    if redishHashToFaceRec.exists(img_hash):
-        redisNameToHash.set(body, img_hash)
-        redisHashToName.sadd(img_hash, body)
-        hashes = redisHashtoHashSet.get(img_hash)
-        result = {responsekey: hashes    }
-        return jsonify(result)
-    
     try:
+        if redishHashToFaceRec.exists(img_hash):
+            redisNameToHash.set(body, img_hash)
+            redisHashToName.sadd(img_hash, body)
+            hashes = redisHashtoHashSet.get(img_hash)
+            result = {responsekey: hashes    }
+            return jsonify(result)
+    
+
         face_encodings = face_recognition.face_encodings(img)
+        
     except Exception as e:
         print("face_ecodings failed: ", e)  
   
