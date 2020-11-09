@@ -32,6 +32,7 @@ redisHashToName = redis.Redis(host=redisHost, db=2)    # Key -> Set
 redisHashToFaceRec = redis.Redis(host=redisHost, db=3) # Key -> Set
 redisHashToHashSet = redis.Redis(host=redisHost, db=4) # Key -> Set
 redisFaceToHashSet = redis.Redis(host=redisHost, db=5) # Key -> Set
+redisHashToObama = redis.Redis(host=redisHost, db=6)
 redisNameToHash.set('foo','bar')
 print(redisNameToHash.get('foo'))
 
