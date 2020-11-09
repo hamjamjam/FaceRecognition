@@ -24,4 +24,4 @@ The worker will also save the image url, the image hash (so the server can pull 
 The worker does some of the full face rec (i.e. stores pickled versions of face encodings)
 
 ## Screenshots
- ![](lab7.png)
+![](lab7.PNG)
