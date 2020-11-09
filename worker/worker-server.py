@@ -41,8 +41,8 @@ def callback2(ch, method, properties, inputbody):
     print('callback made')
     responsekey = "hashes_of_corr_images"
     if redisNameToHash.exists(body):
-        img_hash = redisNameToHash.get(body).decode("utf-8")
-        hashes = redisHashtoHashSet.get(img_hash)
+        img_hash = redisNameToHash.set(body).decode("utf-8")
+        hashes = redisHashtoHashSet.smembers(img_hash)
         result = {responsekey: hashes    }
         return jsonify(result)
     
@@ -65,7 +65,7 @@ def callback2(ch, method, properties, inputbody):
         if redisHashToFaceRec.exists(img_hash):
             redisNameToHash.set(body, img_hash)
             redisHashToName.sadd(img_hash, body)
-            hashes = redisHashtoHashSet.get(img_hash)
+            hashes = redisHashtoHashSet.smembers(img_hash)
             result = {responsekey: hashes    }
             return jsonify(result)
     
@@ -80,21 +80,22 @@ def callback2(ch, method, properties, inputbody):
         
     try:    
         redisNameToHash.set(body, img_hash)
-        redisHashToName.set(img_hash, body)
-        redisHashToFaceRec.set(img_hash, *set(face_encodings))
+        redisHashToName.sadd(img_hash, body)
+        if len(face_encodings) > 0:
+            redisHashToFaceRec.sadd(img_hash, *face_encodings)
 
-        otherHash = {}
+        otherHash = set()
 
         for face_enc in face_encodings:
             try:
-                otherHash.add(redisFaceToHashSet.get(face_enc))
+                otherHash.update(redisFaceToHashSet.smembers(face_enc))
             except:
                 pass
             redisFaceToHashSet.sadd(face_enc, img_hash)
 
         redisHashtoHashSet.sadd(img_hash, *otherHash)
 
-        hashes = redisHashtoHashSet.get(img_hash)
+        hashes = redisHashtoHashSet.smembers(img_hash)
         result = {responsekey: hashes    }
         return jsonify(result)
     
