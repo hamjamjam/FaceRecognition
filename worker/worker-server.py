@@ -74,7 +74,7 @@ def callback2(ch, method, properties, inputbody):
         fileObject = BytesIO(response.content)
         image = face_recognition.load_image_file(fileObject)
         print('loaded image')
-        face_encodings = face_recognition.face_encodings(image)
+        face_encodings = list(face_recognition.face_encodings(image))
         
     except Exception as e:
         print("face_ecodings failed: ", e)  
