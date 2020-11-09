@@ -69,8 +69,11 @@ def callback2(ch, method, properties, inputbody):
             result = {responsekey: hashes    }
             return jsonify(result)
     
-        image = face_recognition.load_image_file(img)
-        face_encodings = face_recognition.face_encodings(img)
+        response = requests.get(body)
+        fileObject = BytesIO(response.content)
+        image = face_recognition.load_image_file(fileObject)
+        print('loaded image')
+        face_encodings = face_recognition.face_encodings(imgage)
         
     except Exception as e:
         print("face_ecodings failed: ", e)  
