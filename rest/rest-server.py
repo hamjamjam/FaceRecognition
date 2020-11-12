@@ -104,10 +104,15 @@ def scanUrl():
         time.sleep(0.5)
         if redisNameToHash.exists(url):
             myhash = redisNameToHash.get(url)
-            if redisHashToObama.exists(myhash):
-                isObama = redisHashToObama.get(myhash).decode("utf-8") 
-                print("is obama: ", isObama)
-                return jsonify(is_obama=isObama)
+#            if redisHashToObama.exists(myhash):
+#                isObama = redisHashToObama.get(myhash).decode("utf-8") 
+#                print("is obama: ", isObama)
+#                return jsonify(is_obama=isObama)
+            if redisHashToHashSet.exists(myhash)
+                hasheSet = list(redisHashToHashSet.smembers(img_hash))
+                hashes = [hash.decode("utf-8") for hash in hasheSet]
+                print('got hashes')
+                return jsonify(hash_list = hashes)
 
       
     return Response(status=500)
