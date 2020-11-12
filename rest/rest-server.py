@@ -115,7 +115,7 @@ def scanUrl():
                 return jsonify(hash_list = hashes)
 
     if redisNameToHash.exists(url):
-        return jsonfiy(hash_list = "no matching images")
+        return jsonify(hash_list = "no matching images")
     else:
         return Response(status=500)
 
