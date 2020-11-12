@@ -8,20 +8,36 @@ I set up the rest server to listen to the existing rest client and work with the
 
 The rest server sends along an image url to Rabbit (which passes it to the worker).
 
-The rest server then checks redis to see if the k, v store containing url and hash exists. If a hash exists, it then starts checking redis for the hash to isObama database until it either times out (5s) or it finds the image hash in the isObama database.
+The rest server then checks redis to see if the k, v store containing url and hash exists. If a hash exists (which means the image was properly processed), it then starts checking redis for the hash to the hashes of other images in the database with a face match until it either times out (5s) or it gets something back.
 
-The server then hands back to the client whether or not the image contained Obama.
+If the rest server cannot find a list of other hashes but it CAN find the hash of the image (from url), then it assumes that the image was processed by did not have any matches and so it returns to the client 'no matches found'.
 
-There is also a database that stores python pickled versions of all the face encodings of each image submitted, but I got tired and did not implement the full "check every item in the database for a face match" part as the main point of the homework was getting Rabbit, Redis, an API and a worker to all talk to each other and running on a Kubernetes cluster which has been achieved.
+If the rest server can find a list of other hashes, it will decode them and hand them back to the client as a list.
+
 
 ## Worker
 I set up the worker to consume the rabbitMQ queue
 
-The worker does a lot of things; right now it will just tell you if your image contains Obama.
+the worker first hashes the image from url.
 
-The worker will also save the image url, the image hash (so the server can pull up the image hash and then use the hash as a key for another Redis database).
+It then gets the face encodings of the image.
 
-The worker does some of the full face rec (i.e. stores pickled versions of face encodings)
+It then checks the entire database of stored images for a match (if the images contain multiple faces, just one face needs to match). If there is a match, the two images get added to each other's hash set.
 
-## Screenshots
-![](lab7.PNG)
+
+## Build, Test and Debug
+OH BOY.
+There are several build, test and debug scripts sitting around in the repo.
+`/rest/build-rest.sh` builds the rest server (got kind of annoying)
+`/worker/Makefile.sh` builds the worker from the image provided
+
+`/get-logs.sh` takes input (e.g. worker) and spits out the logs files
+`/rest/test-rest.sh` takes input (e.g. image url) and runs the client script
+
+By using my `\get-logs.sh` command and ensuring that each pod would write python print output to the log files, I was able to effectively debug syntax with regards to having each service/container/pod talk to the right thing.
+
+Rabbit and Redis were pretty well behaved and neither required an extrenal IP to be run within the same Kube cluster; I was able to just set the hostnames to 'rabbitmq' and 'redis' respectively.
+
+Connecting to Rabbit, sending and consuming was a matter of using the example that their docs give.
+
+I troubleshot the worker script by getting a shell to the worker container and running various test python scripts from there.
