@@ -4,6 +4,8 @@
 I did not make changes to these
 
 ## Rest server
+
+### URL
 I set up the rest server to listen to the existing rest client and work with the url command.
 
 The rest server sends along an image url to Rabbit (which passes it to the worker).
@@ -13,6 +15,15 @@ The rest server then checks redis to see if the k, v store containing url and ha
 If the rest server cannot find a list of other hashes but it CAN find the hash of the image (from url), then it assumes that the image was processed by did not have any matches and so it returns to the client 'no matches found'.
 
 If the rest server can find a list of other hashes, it will decode them and hand them back to the client as a list.
+
+
+### Match
+Here, the service will simply say if a match is found; it will not store the 'image' since it's just getting a hash here. In this instance, there isn't actually anything for the worker to do, so the rest server just queries redis to see if the inputted hash has any matches.
+
+If it does, it returns the hashes and if not, it returns 'no match'.
+
+### Image
+I am tired.
 
 
 ## Worker
@@ -26,7 +37,7 @@ It then checks the entire database of stored images for a match (if the images c
 
 
 ## Build, Test and Debug
-OH BOY.
+
 There are several build, test and debug scripts sitting around in the repo.
 `/rest/build-rest.sh` builds the rest server (got kind of annoying)
 `/worker/Makefile.sh` builds the worker from the image provided
