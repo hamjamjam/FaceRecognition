@@ -28,15 +28,15 @@ print("Connecting to rabbitmq({}) and redis({})".format(rabbitMQHost,redisHost))
 # Initialize the Flask application
 app = Flask(__name__)
 
-@app.route('/scan/hash/<X>', methods=['GET'])
-def getvalue(X):
-    r = redis.Redis(host = "redis",db=1)
-    v = pickle.loads(r.get(X))
-    response = {
-        "value": v
-    }
-    response_pickled = jsonpickle.encode(response)
-    return Response(response=response_pickled, status=200, mimetype="application/json")
+@app.route('/scan/match/<X>', methods=['GET'])
+def match(X):
+    myhash = X
+    if redisHashToHashSet.exists(myhash):
+        hasheSet = list(redisHashToHashSet.smembers(myhash))
+        hashes = [hash.decode("utf-8") for hash in hasheSet]
+    else:
+        hashes = "no matching images"
+    return jsonify(hash_list = hashes)
 
 
 @app.route('/scan/url', methods=['POST'])
