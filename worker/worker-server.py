@@ -36,13 +36,12 @@ redisHashToObama = redis.Redis(host=redisHost, db=6)
 redisNameToHash.set('foo','bar')
 print(redisNameToHash.get('foo'))
 
-def isMatch(face_enc1, face_enc2):
+def isMatch(face_encodings, face_encodings_serialized):
     is_match = False
-    for first_face_enc in face_enc1:
-        for second_face_end in face_enc2:
-            match_results = face_recognition.compare_faces(pickle.loads(first_face_enc), pickle.loads(second_face_enc))
-            if match_results[0]:
-                return True
+    for face_enc_ser in face_encodings_serialized:
+        match_results = face_recognition.compare_faces(face_encodings, pickle.loads(face_enc_ser))
+        if match_results.count(True) > 0:
+            return True
     return False
 
 def isObama(face_encoding):
@@ -127,9 +126,11 @@ def callback2(ch, method, properties, inputbody):
             print(type(face_encodings))
             print(type(img_hash))
             for key in redisHashToFaceRec.keys():
-                face_enc_saved = redisHashToFaceRec.get(key)
-                if isMatch(face_enc_saved, face_encodings_serialized):
+                face_enc_saved = redisHashToFaceRec.smembers(key)
+                face_enc_saved = list(face_enc_saved)
+                if isMatch(face_encodings, face_enc_saved):
                     redisHashToHashSet.sadd(img_hash, key)
+                    redisHashToHashSet.sadd(key, img_hash)
             
             redisHashToFaceRec.sadd(img_hash, *face_encodings_serialized)
             print('if there were faces, added to redis')
