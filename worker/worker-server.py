@@ -143,8 +143,9 @@ def callback2(ch, method, properties, inputbody):
         redisHashToObama.set(img_hash, has_obama)
     
         
-        hashes = redisHashToHashSet.smembers(img_hash)
-        print('got hashes')
+        #hasheSet = list(redisHashToHashSet.smembers(img_hash))
+        #hashes = [hash.decode("utf-8") for hash in hasheSet]
+        #print('got hashes')
         
         redisHashToName.sadd(img_hash, body)
         print('set hash to name')
