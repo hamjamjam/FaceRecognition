@@ -42,8 +42,9 @@ There are several build, test and debug scripts sitting around in the repo.
 
 `/get-logs.sh` takes input (e.g. worker) and spits out the logs files
 `/rest/test-rest.sh` takes input (e.g. image url) and runs the client script
+`/rest/test-match.sh` takes input (e.g. an image hash) and runs the client script
 
-By using my `\get-logs.sh` command and ensuring that each pod would write python print output to the log files, I was able to effectively debug syntax with regards to having each service/container/pod talk to the right thing.
+By using my `\get-logs.sh` command and ensuring that each container would write python print output to the log files, I was able to effectively debug syntax with regards to having each service/container/pod talk to the right thing.
 
 Rabbit and Redis were pretty well behaved and neither required an extrenal IP to be run within the same Kube cluster; I was able to just set the hostnames to 'rabbitmq' and 'redis' respectively.
 
