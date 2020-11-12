@@ -22,16 +22,14 @@ Here, the service will simply say if a match is found; it will not store the 'im
 
 If it does, it returns the hashes and if not, it returns 'no match'.
 
-### Image
-I am tired.
-
 
 ## Worker
 I set up the worker to consume the rabbitMQ queue
 
-the worker first hashes the image from url.
+### URL
+the worker first processes the image and hashes the image from url. It does not store the image.
 
-It then gets the face encodings of the image.
+It then gets the face encodings of the image. It does not store the image.
 
 It then checks the entire database of stored images for a match (if the images contain multiple faces, just one face needs to match). If there is a match, the two images get added to each other's hash set.
 
