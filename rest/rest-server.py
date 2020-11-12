@@ -109,7 +109,7 @@ def scanUrl():
 #                print("is obama: ", isObama)
 #                return jsonify(is_obama=isObama)
             if redisHashToHashSet.exists(myhash):
-                hasheSet = list(redisHashToHashSet.smembers(img_hash))
+                hasheSet = list(redisHashToHashSet.smembers(myhash))
                 hashes = [hash.decode("utf-8") for hash in hasheSet]
                 print('got hashes')
                 return jsonify(hash_list = hashes)
