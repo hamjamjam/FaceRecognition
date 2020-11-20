@@ -87,6 +87,7 @@ def callback2(ch, method, properties, inputbody):
     print('callback made')
     responsekey = "hashes_of_corr_images"
     if redisNameToHash.exists(body):
+        print('name exists')
         return
     
     try:
