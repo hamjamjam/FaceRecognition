@@ -56,7 +56,7 @@ def scanUrl():
     connection.close()
     
     for i in range(0,10):
-        time.sleep(0.5)
+        time.sleep(0.75)
         if redisNameToHash.exists(url):
             myhash = redisNameToHash.get(url)
 #            if redisHashToObama.exists(myhash):
