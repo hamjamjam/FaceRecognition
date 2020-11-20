@@ -82,13 +82,17 @@ def isObama(face_encoding):
 
         
 def callback2(ch, method, properties, inputbody):
-    body = inputbody.decode("utf-8")
-    print(body)
-    print('callback made')
-    responsekey = "hashes_of_corr_images"
-    if redisNameToHash.exists(body):
-        print('name exists')
-        return
+    try:
+        body = inputbody.decode("utf-8")
+        print(body)
+        print('callback made')
+        responsekey = "hashes_of_corr_images"
+        if redisNameToHash.exists(body):
+            print('name exists')
+            return
+    except Exception as e:
+        img_hash = '0'
+        print(e)
     
     try:
         response = requests.get(body)
